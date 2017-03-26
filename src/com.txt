@@ -1,0 +1,5 @@
+idlj -fall  Phone.idl
+javac *.java PhoneApp/*.java
+start orbd - ORBInitialPort 1050
+start java PhoneServer - ORBInitialPort 1050 - ORBInitialHost localhost
+java PhoneClient - ORBInitialPort 1050 - ORBInitialHost localhost

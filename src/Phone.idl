@@ -1,0 +1,9 @@
+module PhoneApp {
+  interface Phone{
+          string viewInfo();
+          boolean addInfo();
+          boolean editInfo();
+          boolean deleteInfo();
+  oneway void shutdown();
+};
+};
