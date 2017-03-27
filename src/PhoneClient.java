@@ -6,9 +6,6 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import java.util.Scanner;
 
-/**
- * Created by Lenovo Z on 26.03.2017.
- */
 public class PhoneClient {
 
     static Phone phoneImpl;
@@ -16,7 +13,9 @@ public class PhoneClient {
     public static void main(String[] args) {
         boolean notExit = true;
         Scanner input = new Scanner(System.in);
-
+        int index;
+        String note;
+        String[] strs;
         try {
             ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
@@ -32,28 +31,47 @@ public class PhoneClient {
                 int ur = Integer.parseInt(input.next());
                 switch (ur) {
                     case 1:
-                        phoneImpl.addInfo();
+                        System.out.println("Enter note:");
+                        note = input.nextLine();
+                        phoneImpl.addInfo(note);
                         break;
                     case 2:
-                        String []strs =phoneImpl.viewInfo().split(";");
-                        for(int i=0;i<strs.length;i++)
-                        System.out.println(strs[i]);
+                        System.out.println("Notes:");
+                        strs = phoneImpl.viewInfo().split(";");
+                        for (int i = 0; i < strs.length; i++)
+                            System.out.println(strs[i]);
                         break;
                     case 3:
-                        phoneImpl.deleteInfo();
+                        System.out.println("Notes:");
+                        strs = phoneImpl.viewInfo().split(";");
+                        for (int i = 0; i < strs.length; i++)
+                            System.out.println(strs[i]);
+                        System.out.println("Enter note number:");
+                        index = Integer.parseInt(input.next());
+                        phoneImpl.deleteInfo(index);
                         break;
                     case 4:
-                        phoneImpl.editInfo();
+                        System.out.println("Notes:");
+                        strs = phoneImpl.viewInfo().split(";");
+                        for (int i = 0; i < strs.length; i++)
+                            System.out.println(strs[i]);
+                        System.out.println("Enter note number:");
+                        index = Integer.parseInt(input.next());
+                        System.out.println("Enter note:");
+                        note = input.nextLine();
+                        phoneImpl.editInfo(index, note);
                         break;
                     case 0:
                         phoneImpl.shutdown();
                         notExit = false;
                         break;
-                } // switch
+                }
             }
         } catch (Exception e) {
             System.out.println("ERROR : " + e);
             e.printStackTrace(System.out);
+        } finally {
+            input.close();
         }
     }
 }

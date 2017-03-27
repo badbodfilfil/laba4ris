@@ -7,14 +7,11 @@ import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
-
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * Created by Lenovo Z on 26.03.2017.
- */
 class PhoneImpl extends PhonePOA {
 
     private ORB orb;
@@ -29,7 +26,6 @@ class PhoneImpl extends PhonePOA {
             String line;
             StringBuilder sb =new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
                 sb.append(line);
                 sb.append(";");
             }
@@ -41,15 +37,10 @@ class PhoneImpl extends PhonePOA {
         return null;
     }
 
-    public boolean addInfo() {
-        Scanner input = new Scanner(System.in);
-
+    public boolean addInfo(String note) {
         try {
             FileWriter writer = new FileWriter("phone_book.txt", true);
-            // запись всей строки
-            String text = input.next();
-            writer.write(text);
-            // запись по символам
+            writer.write("\r\n"+note);
             writer.append(';');
             writer.close();
             return true;
@@ -59,12 +50,34 @@ class PhoneImpl extends PhonePOA {
         }
     }
 
-    public boolean editInfo() {
+    public boolean editInfo(int number,String note) {
         return false;
     }
 
-    public boolean deleteInfo() {
-        return false;
+    public boolean deleteInfo(int number) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
+            String line;
+            ArrayList<String> strs = new ArrayList<String>();
+            while ((line = reader.readLine()) != null) {
+                strs.add(line);
+            }
+            strs.remove(number-1);
+            reader.close();
+            FileWriter writer = new FileWriter("phone_book.txt", true);
+            for(int i=0;i<strs.size();i++){
+                if(i!=0)
+                writer.write("\r\n"+strs.get(i));
+                else
+                    writer.write(strs.get(i));
+
+            }
+            writer.close();
+            return true;
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     public void shutdown() {

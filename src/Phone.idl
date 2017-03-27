@@ -1,9 +1,9 @@
 module PhoneApp {
   interface Phone{
           string viewInfo();
-          boolean addInfo();
-          boolean editInfo();
-          boolean deleteInfo();
+          boolean addInfo(in string note);
+          boolean editInfo(in long number, in string note);
+          boolean deleteInfo(in long number);
   oneway void shutdown();
 };
 };
