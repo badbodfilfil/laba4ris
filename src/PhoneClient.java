@@ -4,7 +4,8 @@ import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class PhoneClient {
 
@@ -12,7 +13,7 @@ public class PhoneClient {
 
     public static void main(String[] args) {
         boolean notExit = true;
-        Scanner input = new Scanner(System.in);
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         int index;
         String note;
         String[] strs;
@@ -28,37 +29,43 @@ public class PhoneClient {
                 System.out.println("3 - Delete");
                 System.out.println("4 - Edit");
                 System.out.println("0 - Exit");
-                int ur = Integer.parseInt(input.next());
+                int ur = Integer.parseInt(input.readLine());
                 switch (ur) {
                     case 1:
                         System.out.println("Enter note:");
-                        note = input.nextLine();
+                        note = input.readLine();
                         phoneImpl.addInfo(note);
                         break;
                     case 2:
+                        System.out.println("--------------------------------");
                         System.out.println("Notes:");
                         strs = phoneImpl.viewInfo().split(";");
                         for (int i = 0; i < strs.length; i++)
-                            System.out.println(strs[i]);
+                            System.out.println(i + 1 + " - " + strs[i]);
+                        System.out.println("--------------------------------");
                         break;
                     case 3:
+                        System.out.println("--------------------------------");
                         System.out.println("Notes:");
                         strs = phoneImpl.viewInfo().split(";");
                         for (int i = 0; i < strs.length; i++)
-                            System.out.println(strs[i]);
+                            System.out.println(i + 1 + " - " + strs[i]);
+                        System.out.println("--------------------------------");
                         System.out.println("Enter note number:");
-                        index = Integer.parseInt(input.next());
+                        index = Integer.parseInt(input.readLine());
                         phoneImpl.deleteInfo(index);
                         break;
                     case 4:
+                        System.out.println("--------------------------------");
                         System.out.println("Notes:");
                         strs = phoneImpl.viewInfo().split(";");
                         for (int i = 0; i < strs.length; i++)
-                            System.out.println(strs[i]);
+                            System.out.println(i + 1 + " - " + strs[i]);
+                        System.out.println("--------------------------------");
                         System.out.println("Enter note number:");
-                        index = Integer.parseInt(input.next());
+                        index = Integer.parseInt(input.readLine());
                         System.out.println("Enter note:");
-                        note = input.nextLine();
+                        note = input.readLine();
                         phoneImpl.editInfo(index, note);
                         break;
                     case 0:
@@ -70,8 +77,6 @@ public class PhoneClient {
         } catch (Exception e) {
             System.out.println("ERROR : " + e);
             e.printStackTrace(System.out);
-        } finally {
-            input.close();
         }
     }
 }

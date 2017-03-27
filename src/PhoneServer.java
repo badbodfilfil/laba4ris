@@ -7,10 +7,10 @@ import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class PhoneImpl extends PhonePOA {
 
@@ -24,7 +24,7 @@ class PhoneImpl extends PhonePOA {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
             String line;
-            StringBuilder sb =new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
                 sb.append(";");
@@ -40,7 +40,7 @@ class PhoneImpl extends PhonePOA {
     public boolean addInfo(String note) {
         try {
             FileWriter writer = new FileWriter("phone_book.txt", true);
-            writer.write("\r\n"+note);
+            writer.write(note);
             writer.append(';');
             writer.close();
             return true;
@@ -50,28 +50,49 @@ class PhoneImpl extends PhonePOA {
         }
     }
 
-    public boolean editInfo(int number,String note) {
-        return false;
+    public boolean editInfo(int number, String note) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
+            String line = reader.readLine();
+            String strs[] = line.split(";");
+            ArrayList<String> notes = new ArrayList<String>();
+            for (int i = 0; i < strs.length; i++) {
+                notes.add(strs[i]);
+            }
+            notes.remove(number-1);
+            notes.add(number-1,note);
+            reader.close();
+            PrintWriter wr = new PrintWriter("phone_book.txt");
+            wr.print("");
+            wr.close();
+            FileWriter writer = new FileWriter("phone_book.txt", true);
+            for (int i = 0; i < notes.size(); i++)
+                writer.write(notes.get(i) + ";");
+            writer.close();
+            return true;
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     public boolean deleteInfo(int number) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
-            String line;
-            ArrayList<String> strs = new ArrayList<String>();
-            while ((line = reader.readLine()) != null) {
-                strs.add(line);
+            String line = reader.readLine();
+            String strs[] = line.split(";");
+            ArrayList<String> notes = new ArrayList<String>();
+            for (int i = 0; i < strs.length; i++) {
+                notes.add(strs[i]);
             }
-            strs.remove(number-1);
+            notes.remove(number - 1);
             reader.close();
+            PrintWriter wr = new PrintWriter("phone_book.txt");
+            wr.print("");
+            wr.close();
             FileWriter writer = new FileWriter("phone_book.txt", true);
-            for(int i=0;i<strs.size();i++){
-                if(i!=0)
-                writer.write("\r\n"+strs.get(i));
-                else
-                    writer.write(strs.get(i));
-
-            }
+            for (int i = 0; i < notes.size(); i++)
+                writer.write(notes.get(i) + ";");
             writer.close();
             return true;
         } catch (IOException ex) {
