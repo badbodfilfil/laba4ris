@@ -15,6 +15,7 @@ import java.util.ArrayList;
 class PhoneImpl extends PhonePOA {
 
     private ORB orb;
+    ArrayList<String> notes;
 
     public void setORB(ORB orb_val) {
         orb = orb_val;
@@ -53,22 +54,11 @@ class PhoneImpl extends PhonePOA {
     public boolean editInfo(int number, String note) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
-            String line = reader.readLine();
-            String strs[] = line.split(";");
-            ArrayList<String> notes = new ArrayList<String>();
-            for (int i = 0; i < strs.length; i++) {
-                notes.add(strs[i]);
-            }
-            notes.remove(number-1);
-            notes.add(number-1,note);
+            notes = readFile();
+            notes.remove(number - 1);
+            notes.add(number - 1, note);
             reader.close();
-            PrintWriter wr = new PrintWriter("phone_book.txt");
-            wr.print("");
-            wr.close();
-            FileWriter writer = new FileWriter("phone_book.txt", true);
-            for (int i = 0; i < notes.size(); i++)
-                writer.write(notes.get(i) + ";");
-            writer.close();
+            writeFile(notes);
             return true;
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -79,26 +69,36 @@ class PhoneImpl extends PhonePOA {
     public boolean deleteInfo(int number) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
-            String line = reader.readLine();
-            String strs[] = line.split(";");
-            ArrayList<String> notes = new ArrayList<String>();
-            for (int i = 0; i < strs.length; i++) {
-                notes.add(strs[i]);
-            }
+            notes = readFile();
             notes.remove(number - 1);
             reader.close();
-            PrintWriter wr = new PrintWriter("phone_book.txt");
-            wr.print("");
-            wr.close();
-            FileWriter writer = new FileWriter("phone_book.txt", true);
-            for (int i = 0; i < notes.size(); i++)
-                writer.write(notes.get(i) + ";");
-            writer.close();
+            writeFile(notes);
             return true;
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             return false;
         }
+    }
+
+    public ArrayList<String> readFile() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("phone_book.txt"), Charset.forName("UTF-8")));
+        String line = reader.readLine();
+        String strs[] = line.split(";");
+        ArrayList<String> notes = new ArrayList<String>();
+        for (int i = 0; i < strs.length; i++) {
+            notes.add(strs[i]);
+        }
+        return notes;
+    }
+
+    public void writeFile(ArrayList<String> notes) throws IOException {
+        PrintWriter wr = new PrintWriter("phone_book.txt");
+        wr.print("");
+        wr.close();
+        FileWriter writer = new FileWriter("phone_book.txt", true);
+        for (int i = 0; i < notes.size(); i++)
+            writer.write(notes.get(i) + ";");
+        writer.close();
     }
 
     public void shutdown() {
